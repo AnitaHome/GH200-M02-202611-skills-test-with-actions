@@ -35,6 +35,15 @@ jobs:
           USER_INPUT: ${{ github.event.inputs.custom_msg }}
         run: |
           echo "安全讀取手動輸入內容：$USER_INPUT"
+
+      - name: Step 4 - Scope Override & Reserved Prefix
+        env:
+          SCOPE_VAR: "step-level"
+          GITHUB_ACTOR: "fake-user"
+        run: |
+          echo "SCOPE_VAR = $SCOPE_VAR"
+          echo "GITHUB_ACTOR = $GITHUB_ACTOR"
+          
   cross-platform-vars:
     strategy:
       matrix:
@@ -58,10 +67,4 @@ jobs:
           Write-Output "Runner OS (Env): $env:RUNNER_OS"
           Write-Output "Commit SHA (Env): $env:GITHUB_SHA"
           
-      - name: Step 4 - Scope Override & Reserved Prefix
-        env:
-          SCOPE_VAR: "step-level"
-          GITHUB_ACTOR: "fake-user"
-        run: |
-          echo "SCOPE_VAR = $SCOPE_VAR"
-          echo "GITHUB_ACTOR = $GITHUB_ACTOR"
+
