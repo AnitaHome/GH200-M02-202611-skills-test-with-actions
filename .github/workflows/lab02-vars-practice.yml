@@ -8,10 +8,13 @@ on:
         description: '輸入測試訊息'
         required: false
         default: 'Hello GH-200'
-
+env:
+  SCOPE_VAR: "workflow-level"
 jobs:
   compare-vars:
     runs-on: ubuntu-latest
+    env:
+      SCOPE_VAR: "job-level"    
     steps:
       - name: Step 1 - Compare Context and Default Env Vars
         run: |
@@ -32,3 +35,33 @@ jobs:
           USER_INPUT: ${{ github.event.inputs.custom_msg }}
         run: |
           echo "安全讀取手動輸入內容：$USER_INPUT"
+  cross-platform-vars:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Print Context (跨平台一致)
+        run: |
+          echo "Runner OS (Context): ${{ runner.os }}"
+          echo "Commit SHA (Context): ${{ github.sha }}"
+
+      - name: Print Default Env Vars (Linux Bash)
+        if: runner.os == 'Linux'
+        run: |
+          echo "Runner OS (Env): $RUNNER_OS"
+          echo "Commit SHA (Env): $GITHUB_SHA"
+
+      - name: Print Default Env Vars (Windows PowerShell)
+        if: runner.os == 'Windows'
+        run: |
+          Write-Output "Runner OS (Env): $env:RUNNER_OS"
+          Write-Output "Commit SHA (Env): $env:GITHUB_SHA"
+          
+      - name: Step 4 - Scope Override & Reserved Prefix
+        env:
+          SCOPE_VAR: "step-level"
+          GITHUB_ACTOR: "fake-user"
+        run: |
+          echo "SCOPE_VAR = $SCOPE_VAR"
+          echo "GITHUB_ACTOR = $GITHUB_ACTOR"
