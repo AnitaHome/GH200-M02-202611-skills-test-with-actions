@@ -8,10 +8,13 @@ on:
         description: '輸入測試訊息'
         required: false
         default: 'Hello GH-200'
-
+env:
+  SCOPE_VAR: "workflow-level"
 jobs:
   compare-vars:
     runs-on: ubuntu-latest
+    env:
+      SCOPE_VAR: "job-level"    
     steps:
       - name: Step 1 - Compare Context and Default Env Vars
         run: |
@@ -54,3 +57,11 @@ jobs:
         run: |
           Write-Output "Runner OS (Env): $env:RUNNER_OS"
           Write-Output "Commit SHA (Env): $env:GITHUB_SHA"
+          
+      - name: Step 4 - Scope Override & Reserved Prefix
+        env:
+          SCOPE_VAR: "step-level"
+          GITHUB_ACTOR: "fake-user"
+        run: |
+          echo "SCOPE_VAR = $SCOPE_VAR"
+          echo "GITHUB_ACTOR = $GITHUB_ACTOR"
