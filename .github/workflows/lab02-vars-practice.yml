@@ -26,3 +26,9 @@ jobs:
           echo "Actor: $GITHUB_ACTOR"
           echo "Repo:  $GITHUB_REPOSITORY"
           echo "Ref:   $GITHUB_REF"
+      - name: "Step 2 - 執行環境：${{ runner.os }}（事件：${{ github.event_name }}）"
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          USER_INPUT: ${{ github.event.inputs.custom_msg }}
+        run: |
+          echo "安全讀取手動輸入內容：$USER_INPUT"
