@@ -32,3 +32,25 @@ jobs:
           USER_INPUT: ${{ github.event.inputs.custom_msg }}
         run: |
           echo "安全讀取手動輸入內容：$USER_INPUT"
+  cross-platform-vars:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Print Context (跨平台一致)
+        run: |
+          echo "Runner OS (Context): ${{ runner.os }}"
+          echo "Commit SHA (Context): ${{ github.sha }}"
+
+      - name: Print Default Env Vars (Linux Bash)
+        if: runner.os == 'Linux'
+        run: |
+          echo "Runner OS (Env): $RUNNER_OS"
+          echo "Commit SHA (Env): $GITHUB_SHA"
+
+      - name: Print Default Env Vars (Windows PowerShell)
+        if: runner.os == 'Windows'
+        run: |
+          Write-Output "Runner OS (Env): $env:RUNNER_OS"
+          Write-Output "Commit SHA (Env): $env:GITHUB_SHA"
