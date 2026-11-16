@@ -1,0 +1,28 @@
+name: Lab 02-2 Context vs Default Env Vars
+
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      custom_msg:
+        description: '輸入測試訊息'
+        required: false
+        default: 'Hello GH-200'
+
+jobs:
+  compare-vars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Step 1 - Compare Context and Default Env Vars
+        run: |
+          echo "=== Context 寫法 (全小寫) ==="
+          echo "Event: ${{ github.event_name }}"
+          echo "Actor: ${{ github.actor }}"
+          echo "Repo:  ${{ github.repository }}"
+          echo "Ref:   ${{ github.ref }}"
+
+          echo "=== Default Env Vars 寫法 (全大寫) ==="
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "Actor: $GITHUB_ACTOR"
+          echo "Repo:  $GITHUB_REPOSITORY"
+          echo "Ref:   $GITHUB_REF"
